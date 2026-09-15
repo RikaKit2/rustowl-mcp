@@ -68,20 +68,59 @@ nix run . -- --help
 
 ## Configuration for AI Clients
 
-### Oh My Pi (OMP)
-Add to your OMP MCP configuration (`~/.omp/agent/config.json` or project MCP config):
+### 1. Zed Editor
+Add `rustowl` under `context_servers` in your `settings.json` (`~/.config/zed/settings.json`):
+
 ```json
 {
-  "mcpServers": {
+  "context_servers": {
     "rustowl": {
-      "command": "/home/user/projects/rustowl-mcp/target/release/rustowl-mcp",
+      "command": "rustowl-mcp",
       "args": ["--stdio"]
     }
   }
 }
 ```
 
-### Claude Desktop / Zed ACP
+If you use agent profiles in Zed (e.g., `agent.profiles.yolo`), you can enable the tools explicitly:
+```json
+{
+  "agent": {
+    "profiles": {
+      "yolo": {
+        "context_servers": {
+          "rustowl": {
+            "tools": {
+              "rustowl_inspect_cursor": true,
+              "rustowl_inspect_line": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### 2. Oh My Pi (OMP)
+Add to `~/.omp/agent/mcp.json`:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "rustowl": {
+      "type": "stdio",
+      "command": "rustowl-mcp",
+      "args": ["--stdio"]
+    }
+  }
+}
+```
+
+### 3. Claude Desktop
+Add to `claude_desktop_config.json`:
+
 ```json
 {
   "mcpServers": {
@@ -92,7 +131,6 @@ Add to your OMP MCP configuration (`~/.omp/agent/config.json` or project MCP con
   }
 }
 ```
-
 ## CLI Usage
 
 You can test inspection directly in your terminal:
