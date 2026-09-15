@@ -81,13 +81,12 @@ Add `rustowl` under `context_servers` in your `settings.json` (`~/.config/zed/se
   }
 }
 ```
-
-If you use agent profiles in Zed (e.g., `agent.profiles.yolo`), you can enable the tools explicitly:
+*(Optional)* If you configure tool permissions per agent profile in Zed, enable the tools under your active profile (e.g., `default`):
 ```json
 {
   "agent": {
     "profiles": {
-      "yolo": {
+      "<your-profile-name>": {
         "context_servers": {
           "rustowl": {
             "tools": {

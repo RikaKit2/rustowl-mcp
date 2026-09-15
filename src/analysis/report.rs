@@ -35,6 +35,8 @@ pub struct LiveSpan {
 pub struct BorrowSpan {
     pub kind: String, // "immutable" or "mutable"
     pub lines: (u32, u32),
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,7 +70,7 @@ pub fn normalize_decorations(
         let end_l = d.range.end.line + 1;
 
         match d.kind {
-            DecorationType::DefinitelyLive => {
+            DecorationType::DefinitelyLive | DecorationType::Lifetime => {
                 live_span = Some(LiveSpan {
                     start_line: start_l,
                     end_line: end_l,
@@ -86,12 +88,14 @@ pub fn normalize_decorations(
                 active_borrows.push(BorrowSpan {
                     kind: "immutable".to_string(),
                     lines: (start_l, end_l),
+                    description: d.hover_text.clone(),
                 });
             }
             DecorationType::MutBorrow => {
                 active_borrows.push(BorrowSpan {
                     kind: "mutable".to_string(),
                     lines: (start_l, end_l),
+                    description: d.hover_text.clone(),
                 });
             }
             DecorationType::Move => {

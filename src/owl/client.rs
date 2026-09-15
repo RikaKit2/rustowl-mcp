@@ -183,8 +183,10 @@ impl RustOwlClient {
         };
 
         let file_uri = format!("file://{}", abs_path.display());
+        let doc_id = TextDocumentIdentifier { uri: file_uri };
         let params = RustOwlCursorParams {
-            text_document: TextDocumentIdentifier { uri: file_uri },
+            document: doc_id.clone(),
+            text_document: Some(doc_id),
             position: Position {
                 line: line.saturating_sub(1),
                 character: col.saturating_sub(1),
@@ -216,8 +218,8 @@ impl RustOwlClient {
         let start_line = line.saturating_sub(1);
         let end_line = (line + 10).min(lines.len() as u32);
 
-        decorations.push(RustOwlDecoration {
-            range: Range {
+        decorations.push(RustOwlDecoration::new(
+            Range {
                 start: Position {
                     line: start_line,
                     character: 0,
@@ -227,15 +229,15 @@ impl RustOwlClient {
                     character: 1,
                 },
             },
-            kind: DecorationType::DefinitelyLive,
-        });
+            DecorationType::DefinitelyLive,
+        ));
 
         // Scan for &mut or move in nearby lines
         for l in start_line..end_line {
             if let Some(text) = lines.get(l as usize) {
                 if text.contains("&mut ") {
-                    decorations.push(RustOwlDecoration {
-                        range: Range {
+                    decorations.push(RustOwlDecoration::new(
+                        Range {
                             start: Position {
                                 line: l,
                                 character: 0,
@@ -245,11 +247,11 @@ impl RustOwlClient {
                                 character: 0,
                             },
                         },
-                        kind: DecorationType::MutBorrow,
-                    });
+                        DecorationType::MutBorrow,
+                    ));
                 } else if text.contains('&') && !text.contains("&&") {
-                    decorations.push(RustOwlDecoration {
-                        range: Range {
+                    decorations.push(RustOwlDecoration::new(
+                        Range {
                             start: Position {
                                 line: l,
                                 character: 0,
@@ -259,8 +261,8 @@ impl RustOwlClient {
                                 character: 0,
                             },
                         },
-                        kind: DecorationType::ImmBorrow,
-                    });
+                        DecorationType::ImmBorrow,
+                    ));
                 }
             }
         }

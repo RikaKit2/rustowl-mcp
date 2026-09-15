@@ -50,8 +50,8 @@ async fn test_mcp_initialize_and_tools_list() {
 async fn test_normalization_decorations_and_conflicts() {
     let dummy_path = Path::new("src/main.rs");
     let decorations = vec![
-        RustOwlDecoration {
-            range: Range {
+        RustOwlDecoration::new(
+            Range {
                 start: Position {
                     line: 9,
                     character: 4,
@@ -61,10 +61,10 @@ async fn test_normalization_decorations_and_conflicts() {
                     character: 1,
                 },
             },
-            kind: DecorationType::DefinitelyLive,
-        },
-        RustOwlDecoration {
-            range: Range {
+            DecorationType::DefinitelyLive,
+        ),
+        RustOwlDecoration::new(
+            Range {
                 start: Position {
                     line: 11,
                     character: 8,
@@ -74,10 +74,10 @@ async fn test_normalization_decorations_and_conflicts() {
                     character: 1,
                 },
             },
-            kind: DecorationType::ImmBorrow,
-        },
-        RustOwlDecoration {
-            range: Range {
+            DecorationType::ImmBorrow,
+        ),
+        RustOwlDecoration::new(
+            Range {
                 start: Position {
                     line: 17,
                     character: 8,
@@ -87,10 +87,10 @@ async fn test_normalization_decorations_and_conflicts() {
                     character: 1,
                 },
             },
-            kind: DecorationType::MutBorrow,
-        },
-        RustOwlDecoration {
-            range: Range {
+            DecorationType::MutBorrow,
+        ),
+        RustOwlDecoration::new(
+            Range {
                 start: Position {
                     line: 20,
                     character: 4,
@@ -100,8 +100,8 @@ async fn test_normalization_decorations_and_conflicts() {
                     character: 12,
                 },
             },
-            kind: DecorationType::Outlive,
-        },
+            DecorationType::Outlive,
+        ),
     ];
 
     let report = normalize_decorations(dummy_path, 10, 5, &decorations);
